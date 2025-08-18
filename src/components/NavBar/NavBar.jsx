@@ -10,15 +10,22 @@ import {
   useDisclosure,
   useColorMode,
   Collapse,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { CartWidget } from "../CartWidget";
+import { useCategory } from "../../hooks";
+import { Link } from "react-router-dom";
 
 const categorias = ["Home", "Productos", "Contacto"];
 
 export const NavBar = () => {
   const { isOpen, onToggle } = useDisclosure();
   const { colorMode, toggleColorMode } = useColorMode();
+  const { categories } = useCategory();
 
   return (
     <Box>
@@ -32,7 +39,9 @@ export const NavBar = () => {
         borderStyle={"solid"}
         borderColor={useColorModeValue("gray.200", "gray.900")}
         align={"center"}
+        justify={"center"}
       >
+        {/* Botón hamburguesa (mobile) */}
         <Flex
           flex={{ base: 1, md: "auto" }}
           ml={{ base: -2 }}
@@ -47,6 +56,8 @@ export const NavBar = () => {
             aria-label={"Toggle Navigation"}
           />
         </Flex>
+
+        {/* LOGO */}
         <Flex flex={{ base: 1 }} justify={{ base: "center", md: "start" }}>
           <Text
             textAlign={useBreakpointValue({ base: "center", md: "left" })}
@@ -60,19 +71,47 @@ export const NavBar = () => {
             Logo
           </Text>
 
-          <Flex ml="auto" mr={20} display={{ base: "none", md: "flex" }}>
-            <Stack direction={"row"} spacing={4} align={"center"}>
-              {categorias.map((cat) => (
-                <Button
-                  key={cat}
+          {/* Menú Principal */}
+          <Flex
+            flex={1}
+            justify="center"
+            display={{ base: "none", md: "flex" }}
+          >
+            <Stack direction={"row"} spacing={4} align="center">
+              <Button variant="ghost" fontWeight="normal" as={Link} to="/">
+                Home
+              </Button>
+
+              {/* Menú de categorías dentro de Productos */}
+              <Menu>
+                <MenuButton
                   variant="ghost"
                   fontWeight="normal"
-                  href={`/${cat.toLowerCase()}`}
-                  as="a"
+                  as={Link}
+                  to="/productos"
                 >
-                  {cat}
-                </Button>
-              ))}
+                  Productos
+                </MenuButton>
+
+                <MenuList maxH="300px" overflowY="auto">
+                  {categories.map((category) => (
+                    <MenuItem key={category}>
+                      <Link to={`/category/${category.replace(/\s+/g, "-")}`}>
+                        {category}
+                      </Link>
+                    </MenuItem>
+                  ))}
+                </MenuList>
+              </Menu>
+
+              <Button
+                variant="ghost"
+                fontWeight="normal"
+                as={Link}
+                to="/contacto"
+              >
+                Contacto
+              </Button>
             </Stack>
           </Flex>
         </Flex>
