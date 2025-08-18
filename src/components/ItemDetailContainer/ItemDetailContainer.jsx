@@ -20,18 +20,17 @@ import { useParams, useNavigate } from "react-router-dom";
 
 export const ItemDetail = ({
   item,
+  count,
   handleAddItem,
   handleRemoveItem,
-  count,
-  handleNavigateCheckout,
+  handleAddToCart,
 }) => {
   return (
     <Container maxW="7xl" py={10}>
       <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={{ base: 8, md: 10 }}>
-        {/* Imagen del producto */}
         <Flex>
           <Image
-            src={item.image}
+            src={item.image ?? "/placeholder.png"} // ✅ fallback si no hay imagen
             alt={item.title}
             rounded="md"
             objectFit="cover"
@@ -40,7 +39,6 @@ export const ItemDetail = ({
           />
         </Flex>
 
-        {/* Detalles del producto */}
         <Stack spacing={{ base: 6, md: 10 }}>
           <Box as="header">
             <Heading
@@ -81,17 +79,16 @@ export const ItemDetail = ({
             <Button onClick={handleAddItem}>+</Button>
           </Flex>
 
-          {/* Botón agregar al carrito */}
+          {/* Botón Add to Cart */}
           <Button
             colorScheme="teal"
             size="lg"
             fontWeight="bold"
-            onClick={handleNavigateCheckout}
+            onClick={handleAddToCart}
           >
             Add to Cart
           </Button>
 
-          {/* Info de envío */}
           <Flex align="center" gap={2}>
             <MdLocalShipping />
             <Text>2-3 business day delivery</Text>
@@ -102,14 +99,14 @@ export const ItemDetail = ({
   );
 };
 
-export const ItemDetailContainer = ({ item }) => {
+export const ItemDetailContainer = () => {
   const [product, setProduct] = useState(null);
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(1); // ✅ iniciamos en 1
   const [loading, setLoading] = useState(true);
 
   const { addItem, removeItem } = useContext(CartContext);
   const { id } = useParams();
-  const nagivate = useNavigate();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setLoading(true);
@@ -125,39 +122,30 @@ export const ItemDetailContainer = ({ item }) => {
       });
   }, [id]);
 
-  const handleAddItem = () => {
-    const newCount = count + 1;
-    setCount(newCount);
-    addItem(product, newCount);
+  const handleAddItem = () => setCount(count + 1);
+  const handleRemoveItem = () => setCount(count > 1 ? count - 1 : 1);
+
+  const handleAddToCart = () => {
+    addItem(product, count); // ✅ agregamos al carrito la cantidad seleccionada
+    // navigate("/checkout"); // opcional, solo si quieres ir al checkout automáticamente
   };
 
-  const handleRemoveItem = () => {
-    const newCount = count > 0 ? count - 1 : 0;
-    setCount(newCount);
-    removeItem(product);
-  };
-
-  const handleNavigateCheckout = () => {
-    navigate("/checkout");
-  };
-
-  if (loading) {
+  if (loading)
     return (
       <Flex height="80vh" align="center" justify="center">
         <Spinner size="xl" />
       </Flex>
     );
-  }
 
   if (!product) return <Text>Producto no encontrado</Text>;
 
   return (
     <ItemDetail
       item={product}
+      count={count}
       handleAddItem={handleAddItem}
       handleRemoveItem={handleRemoveItem}
-      count={count}
-      handleNavigateCheckout={handleNavigateCheckout}
+      handleAddToCart={handleAddToCart}
     />
   );
 };

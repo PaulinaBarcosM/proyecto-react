@@ -4,25 +4,19 @@ import { useNavigate } from "react-router";
 
 export const ItemCount = () => {
   const [state, setState] = useState(0);
-
   const handleAdd = () => {
     setState(state + 1);
   };
-
-  const handleRemove = () => {
-    setState(state - 1);
-  };
-
-  useEffect(() => {
-    console.log("useEffect con dependencias vacias");
-  }, []);
+  const handleRemove = () => setState(state > 0 ? state - 1 : 0);
 
   return (
-    <Flex>
+    <Flex gap={2} align="center">
       <Button onClick={handleRemove}>-</Button>
       <Text>{state}</Text>
       <Button onClick={handleAdd}>+</Button>
-      <Button onClick={BotonAgregarAlCarritot}>Agregar al carrito</Button>
+      <Button onClick={() => onAddToCart(state)} disabled={state === 0}>
+        Agregar al carrito
+      </Button>
     </Flex>
   );
 };

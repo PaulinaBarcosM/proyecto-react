@@ -11,11 +11,11 @@ export const CartProvider = ({ children }) => {
     if (existingProduct) {
       setCartState(
         cartState.map((item) =>
-          item.id === product.id ? { ...item, qtyItem: item.qtyItem + 1 } : item
+          item.id === product.id ? { ...item, qtyItem: qtyItem } : item
         )
       );
     } else {
-      setCartState([...cartState, { ...product, qtyItem: qtyItem }]);
+      setCartState([...cartState, { ...product, qtyItem }]);
     }
   };
 
