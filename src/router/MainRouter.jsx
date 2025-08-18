@@ -2,11 +2,11 @@ import { HashRouter as Router, Routes, Route } from "react-router-dom";
 import {
   Home,
   NotFound,
-  ItemDetail,
   /*Products,*/
   Category,
   Checkout,
   Payment,
+  ItemDetail,
   /*Contact,*/
 } from "../pages";
 import { NavBar } from "../components";

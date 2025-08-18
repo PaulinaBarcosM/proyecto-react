@@ -12,9 +12,9 @@ import {
   StackDivider,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { MdLocalShipping } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { CartContext } from "../../context";
 
 export const ItemDetail = ({
@@ -50,7 +50,7 @@ export const ItemDetail = ({
               fontWeight={600}
               fontSize={{ base: "2xl", sm: "4xl", lg: "5xl" }}
             >
-              {item.tile}
+              {item.title}
             </Heading>
             <Text
               color={useColorModeValue("gray.900", "gray.400")}
@@ -102,12 +102,28 @@ export const ItemDetail = ({
   );
 };
 
-export const ItemDetailContainer = ({ item }) => {
+export const ItemDetailContainer = () => {
+  const [item, setItem] = useState(null);
   const [count, setCount] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   const { addItem, removeItem } = useContext(CartContext);
-
+  const { id } = useParams();
   const nagivate = useNavigate();
+
+  useEffect(() => {
+    setLoading(true);
+    fetch(`https://fakestoreapi.com/products/${id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setItem(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setLoading(false);
+      });
+  }, [id]);
 
   const handleAddItem = () => {
     const newCount = count + 1;
@@ -116,13 +132,24 @@ export const ItemDetailContainer = ({ item }) => {
   };
 
   const handleRemoveItem = () => {
-    setCount(count - 1);
+    const newCount = count > 0 ? count - 1 : 0;
+    setCount(newCount);
     removeItem(item);
   };
 
-  const handleNavigateCkeckout = () => {
-    Navigate("/checkout");
+  const handleNavigateCheckout = () => {
+    navigate("/checkout");
   };
+
+  if (loading) {
+    return (
+      <Flex height="80vh" align="center" justify="center">
+        <Spinner size="xl" />
+      </Flex>
+    );
+  }
+
+  if (!item) return <Text>Producto no encontrado</Text>;
 
   return (
     <ItemDetail
@@ -130,7 +157,6 @@ export const ItemDetailContainer = ({ item }) => {
       handleAddItem={handleAddItem}
       handleRemoveItem={handleRemoveItem}
       count={count}
-      setCount={setCount}
       handleNavigateCheckout={handleNavigateCheckout}
     />
   );

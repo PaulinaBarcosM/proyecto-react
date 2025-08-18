@@ -41,7 +41,7 @@ export const ItemListContainer = ({ products }) => {
                   height={240}
                   width={280}
                   objectFit={"cover"}
-                  alt="#"
+                  alt={item.title}
                 />
               </Box>
               <Stack pt={10} align={"center"}>
@@ -79,12 +79,10 @@ export const ItemListContainer = ({ products }) => {
                   py={6}
                   fontWeight="bold"
                   _hover={{ bg: "gray.600" }}
+                  as={Link}
+                  to={`/item/${item.id}`}
                 >
-                  <Link to={`/item/${item.id}`}>
-                    <Text fontSize={"md"} fontWeight={"semibold"}>
-                      View more
-                    </Text>
-                  </Link>
+                  View more
                 </Button>
               </Stack>
             </Box>
