@@ -1,25 +1,3 @@
-{
-  /*import React from "react";
-
-export const ItemListContainer = ({ greeting }) => {
-  return (
-    <div
-      style={{
-        fontSize: "2 rem",
-        fontWeight: "bold",
-        height: "90vh",
-        width: "100vw",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      {greeting}
-    </div>
-  );
-}; */
-}
-
 import {
   Box,
   Center,
@@ -31,13 +9,14 @@ import {
   Flex,
   Button,
 } from "@chakra-ui/react";
+import { Link } from "react-router-dom";
 
 export const ItemListContainer = ({ products }) => {
   return (
     <Flex wrap="wrap" justify="center" gap={6} p={4}>
-      {products.map((item) => {
+      {products?.map((item) => {
         return (
-          <Center py={12} key={item.id}>
+          <Center py={10} key={item.id}>
             <Box
               role={"group"}
               p={6}
@@ -48,24 +27,36 @@ export const ItemListContainer = ({ products }) => {
               rounded={"lg"}
               pos={"relative"}
               zIndex={1}
+              minH="450px"
+              display="flex"
+              flexDirection="column"
+              justifyContent="space-between"
             >
               <Box rounded={"lg"} mt={-12} pos={"relative"} height={"230px"}>
                 <Image
+                  src={item.image}
                   rounded={"lg"}
-                  height={230}
-                  width={282}
+                  height={240}
+                  width={280}
                   objectFit={"cover"}
                   alt="#"
                 />
               </Box>
               <Stack pt={10} align={"center"}>
-                <Heading fontSize={"2xl"} fontFamily={"body"} fontWeight={800}>
-                  {item.name}
+                <Heading
+                  fontSize={"xl"}
+                  fontFamily={"body"}
+                  fontWeight={800}
+                  textAlign="center"
+                  noOfLines={2}
+                >
+                  {item.title}
                 </Heading>
                 <Text
                   color={"gray.500"}
                   fontSize={"sm"}
                   textTransform={"uppercase"}
+                  noOfLines={1}
                 >
                   {item.description}
                 </Text>
@@ -87,7 +78,11 @@ export const ItemListContainer = ({ products }) => {
                   fontWeight="bold"
                   _hover={{ bg: "gray.600" }}
                 >
-                  View more
+                  <Link to={`/item/${item.id}`}>
+                    <Text fontSize={"md"} fontWeight={"semibold"}>
+                      View more
+                    </Text>
+                  </Link>
                 </Button>
               </Stack>
             </Box>

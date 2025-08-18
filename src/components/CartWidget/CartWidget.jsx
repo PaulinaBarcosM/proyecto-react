@@ -1,19 +1,25 @@
-import { IoCartOutline } from "react-icons/io5";
-
+import { useContext } from "react";
+import { CiShoppingCart } from "react-icons/ci";
+import { CartContext } from "../../context";
+import { Link } from "react-router-dom";
 export const CartWidget = () => {
+  const { cartState } = useContext(CartContext);
+
+  const totalItems = cartState.reduce((acc, item) => acc + item.qtyItem, 0);
+
   return (
-    <div
+    <Link
+      to="/checkout"
       style={{
         display: "flex",
-        marginRight: "10px",
-        marginLeft: "40vh",
+        marginRight: "20px",
         alignItems: "center",
-        width: "40px",
+        width: "30%",
         justifyContent: "space-between",
       }}
     >
-      <IoCartOutline size={30} />
-      10
-    </div>
+      <CiShoppingCart size={30} />
+      {totalItems}
+    </Link>
   );
 };
