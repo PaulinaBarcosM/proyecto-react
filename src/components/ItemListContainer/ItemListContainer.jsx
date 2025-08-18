@@ -8,8 +8,10 @@ import {
   Image,
   Flex,
   Button,
+  HStack,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
+import { BsArrowUpRight } from "react-icons/bs";
 
 export const ItemListContainer = ({ products }) => {
   return (

@@ -10,7 +10,7 @@ export const useProducts = (collectionName) => {
     const itemCollection = collection(db, collectionName);
     getDocs(itemCollection)
       .then((snapshot) => {
-        setItemsData(
+        setProductsData(
           snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
         );
       })
@@ -18,7 +18,7 @@ export const useProducts = (collectionName) => {
         console.log(error);
       })
       .finally(() => setLoading(false));
-  }, []);
+  }, [collectionName]);
 
   return { productsData, loading };
 };

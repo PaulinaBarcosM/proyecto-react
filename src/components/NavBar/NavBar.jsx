@@ -14,18 +14,18 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
+  Spinner,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { CartWidget } from "../CartWidget";
-import { useCategory } from "../../hooks";
+import { useCategories } from "../../hooks/useCategories";
 import { Link } from "react-router-dom";
-
-const categorias = ["Home", "Productos", "Contacto"];
 
 export const NavBar = () => {
   const { isOpen, onToggle } = useDisclosure();
   const { colorMode, toggleColorMode } = useColorMode();
-  const { categories } = useCategory();
+
+  const { categories, loading } = useCategories();
 
   return (
     <Box>
@@ -58,7 +58,7 @@ export const NavBar = () => {
         </Flex>
 
         {/* LOGO */}
-        <Flex flex={{ base: 1 }} justify={{ base: "center", md: "start" }}>
+        <Flex flex={1} justify={{ base: "center", md: "start" }}>
           <Text
             textAlign={useBreakpointValue({ base: "center", md: "left" })}
             fontFamily={"heading"}
@@ -82,50 +82,45 @@ export const NavBar = () => {
                 Home
               </Button>
 
-              {/* Menú de categorías dentro de Productos */}
+              {/* Menú de categorías */}
               <Menu>
-                <MenuButton
-                  variant="ghost"
-                  fontWeight="normal"
-                  as={Link}
-                  to="/productos"
-                >
-                  Productos
+                <MenuButton as={Button} cursor="pointer">
+                  Categorías
                 </MenuButton>
-
-                <MenuList maxH="300px" overflowY="auto">
-                  {categories.map((category) => (
-                    <MenuItem key={category}>
-                      <Link to={`/category/${category.replace(/\s+/g, "-")}`}>
-                        {category}
-                      </Link>
-                    </MenuItem>
-                  ))}
+                <MenuList height={"300px"} overflowY={"scroll"}>
+                  {loading ? (
+                    <Flex justify="center" p={4}>
+                      <Spinner
+                        thickness="4px"
+                        speed="0.65s"
+                        emptyColor="gray.200"
+                        color="blue.500"
+                        size="md"
+                      />
+                    </Flex>
+                  ) : (
+                    categories.map((cat) => (
+                      <MenuItem key={cat}>
+                        <Link to={`/category/${cat}`}>{cat}</Link>
+                      </MenuItem>
+                    ))
+                  )}
                 </MenuList>
               </Menu>
-
-              <Button
-                variant="ghost"
-                fontWeight="normal"
-                as={Link}
-                to="/contacto"
-              >
-                Contacto
-              </Button>
             </Stack>
           </Flex>
         </Flex>
 
+        {/* Botones a la derecha: carrito, modo oscuro y Sign Up */}
         <Stack
           flex={{ base: 1, md: 0 }}
           justify={"flex-end"}
           direction={"row"}
-          spacing={6}
+          spacing={4}
           align={"center"}
         >
           <CartWidget />
 
-          {/* Botón modo oscuro */}
           <Button onClick={toggleColorMode} size="sm">
             {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
           </Button>
@@ -140,20 +135,58 @@ export const NavBar = () => {
           >
             Sign Up
           </Button>
+
+          <Button
+            as={"a"}
+            display={{ base: "none", md: "inline-flex" }}
+            fontSize={"sm"}
+            fontWeight={400}
+            variant={"link"}
+            href={"#"}
+          >
+            Sign In
+          </Button>
         </Stack>
       </Flex>
 
-      {/* Menú colapsable (visible solo cuando se hace toggle en mobile) */}
+      {/* Menú colapsable (mobile) */}
       <Collapse in={isOpen} animateOpacity>
         <Box p={4} bg={useColorModeValue("gray.100", "gray.700")}>
           <Stack as={"nav"} spacing={4}>
-            {categorias.map((cat) => (
-              <Box as="a" href={`/${cat.toLowerCase()}`} key={cat}>
-                {cat}
-              </Box>
-            ))}
+            <Box as="a" href={`/`} key="home">
+              Home
+            </Box>
 
-            {/* Agregamos Sign Up en mobile */}
+            {loading ? (
+              <Flex justify="center" p={4}>
+                <Spinner
+                  thickness="4px"
+                  speed="0.65s"
+                  emptyColor="gray.200"
+                  color="blue.500"
+                  size="md"
+                />
+              </Flex>
+            ) : (
+              categories.map((cat) => (
+                <Box as={Link} to={`/category/${cat}`} key={cat}>
+                  {cat}
+                </Box>
+              ))
+            )}
+
+            {/* Sign Up en mobile */}
+            <Button
+              as="a"
+              href="#"
+              variant="outline"
+              size="sm"
+              width="fit-content"
+              alignSelf="start"
+            >
+              Sign Up
+            </Button>
+
             <Button
               as="a"
               href="#"
