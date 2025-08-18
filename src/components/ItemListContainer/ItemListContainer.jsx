@@ -36,12 +36,13 @@ export const ItemListContainer = ({ products }) => {
             >
               <Box rounded={"lg"} mt={-12} pos={"relative"} height={"230px"}>
                 <Image
-                  src={item.image}
+                  src={item?.image ?? "/placeholder.png"}
                   rounded={"lg"}
-                  height={240}
                   width={280}
+                  maxH="240px"
+                  minH="200px"
                   objectFit={"cover"}
-                  alt={item.title}
+                  alt={item?.title ?? "Product Image"}
                 />
               </Box>
               <Stack pt={10} align={"center"}>

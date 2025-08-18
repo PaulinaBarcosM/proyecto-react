@@ -11,40 +11,38 @@ import {
   SimpleGrid,
   StackDivider,
   useColorModeValue,
+  Spinner,
 } from "@chakra-ui/react";
-import { useContext, useState, useEffect } from "react";
 import { MdLocalShipping } from "react-icons/md";
-import { useNavigate, useParams } from "react-router-dom";
+import { useState, useEffect, useContext } from "react";
 import { CartContext } from "../../context";
+import { useParams, useNavigate } from "react-router-dom";
 
 export const ItemDetail = ({
   item,
   handleAddItem,
   handleRemoveItem,
   count,
-  setCount,
   handleNavigateCheckout,
 }) => {
   return (
-    <Container maxW={"7xl"}>
-      <SimpleGrid
-        columns={{ base: 1, lg: 2 }}
-        spacing={{ base: 8, md: 10 }}
-        py={{ base: 18, md: 24 }}
-      >
+    <Container maxW="7xl" py={10}>
+      <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={{ base: 8, md: 10 }}>
+        {/* Imagen del producto */}
         <Flex>
           <Image
-            rounded={"md"}
-            alt={"product image"}
             src={item.image}
-            fit={"cover"}
-            align={"center"}
-            w={"100%"}
+            alt={item.title}
+            rounded="md"
+            objectFit="cover"
+            w="100%"
             h={{ base: "100%", sm: "400px", lg: "500px" }}
           />
         </Flex>
+
+        {/* Detalles del producto */}
         <Stack spacing={{ base: 6, md: 10 }}>
-          <Box as={"header"}>
+          <Box as="header">
             <Heading
               lineHeight={1.1}
               fontWeight={600}
@@ -55,7 +53,8 @@ export const ItemDetail = ({
             <Text
               color={useColorModeValue("gray.900", "gray.400")}
               fontWeight={300}
-              fontSize={"2xl"}
+              fontSize="2xl"
+              mt={2}
             >
               ${item.price} USD
             </Text>
@@ -63,7 +62,7 @@ export const ItemDetail = ({
 
           <Stack
             spacing={{ base: 4, sm: 6 }}
-            direction={"column"}
+            direction="column"
             divider={
               <StackDivider
                 borderColor={useColorModeValue("gray.200", "gray.600")}
@@ -71,39 +70,40 @@ export const ItemDetail = ({
             }
           >
             <VStack spacing={{ base: 4, sm: 6 }}>
-              <Text fontSize={"lg"}>{item.description}</Text>
+              <Text fontSize="lg">{item.description}</Text>
             </VStack>
           </Stack>
-          <Flex>
-            <Text>
-              Stock:{" "}
-              {item.stock < 20 ? "Ultimas unidades disponibles" : item.stock}
-            </Text>
-          </Flex>
-          <Flex
-            justifyContent={"space-between"}
-            width={"20%"}
-            alignItems={"center"}
-          >
+
+          {/* Contador */}
+          <Flex justify="start" align="center" gap={3}>
             <Button onClick={handleRemoveItem}>-</Button>
             <Text>{count}</Text>
             <Button onClick={handleAddItem}>+</Button>
           </Flex>
-          <Stack direction="row" alignItems="center" justifyContent={"center"}>
-            <Button onClick={handleNavigateCheckout}>Add to Cart</Button>
-          </Stack>
-          <Stack direction="row" alignItems="center" justifyContent={"center"}>
+
+          {/* Botón agregar al carrito */}
+          <Button
+            colorScheme="teal"
+            size="lg"
+            fontWeight="bold"
+            onClick={handleNavigateCheckout}
+          >
+            Add to Cart
+          </Button>
+
+          {/* Info de envío */}
+          <Flex align="center" gap={2}>
             <MdLocalShipping />
             <Text>2-3 business day delivery</Text>
-          </Stack>
+          </Flex>
         </Stack>
       </SimpleGrid>
     </Container>
   );
 };
 
-export const ItemDetailContainer = () => {
-  const [item, setItem] = useState(null);
+export const ItemDetailContainer = ({ item }) => {
+  const [product, setProduct] = useState(null);
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
@@ -116,7 +116,7 @@ export const ItemDetailContainer = () => {
     fetch(`https://fakestoreapi.com/products/${id}`)
       .then((res) => res.json())
       .then((data) => {
-        setItem(data);
+        setProduct(data);
         setLoading(false);
       })
       .catch((err) => {
@@ -128,13 +128,13 @@ export const ItemDetailContainer = () => {
   const handleAddItem = () => {
     const newCount = count + 1;
     setCount(newCount);
-    addItem(item, newCount);
+    addItem(product, newCount);
   };
 
   const handleRemoveItem = () => {
     const newCount = count > 0 ? count - 1 : 0;
     setCount(newCount);
-    removeItem(item);
+    removeItem(product);
   };
 
   const handleNavigateCheckout = () => {
@@ -149,11 +149,11 @@ export const ItemDetailContainer = () => {
     );
   }
 
-  if (!item) return <Text>Producto no encontrado</Text>;
+  if (!product) return <Text>Producto no encontrado</Text>;
 
   return (
     <ItemDetail
-      item={item}
+      item={product}
       handleAddItem={handleAddItem}
       handleRemoveItem={handleRemoveItem}
       count={count}

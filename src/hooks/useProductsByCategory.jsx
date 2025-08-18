@@ -1,27 +1,19 @@
 import { useEffect, useState } from "react";
-import { db } from "../firebase";
-import { collection, getDocs, query, where } from "firebase/firestore";
 
 export const useProductsByCategory = (categoryId) => {
   const [productsData, setProductsData] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const customQuery = query(
-      collection(db, "products"),
-      where("category", "==", categoryId)
-    );
+    if (!categoryId) return;
 
-    getDocs(customQuery)
-      .then((snapshot) => {
-        setProductsData(
-          snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
-        );
-      })
-      .catch((error) => {
-        console.log(error);
-      })
+    setLoading(true);
+    fetch(`https://fakestoreapi.com/products/category/${categoryId}`)
+      .then((res) => res.json())
+      .then((data) => setProductsData(data))
+      .catch((error) => console.error(error))
       .finally(() => setLoading(false));
   }, [categoryId]);
+
   return { productsData, loading };
 };
