@@ -7,5 +7,7 @@ export const Category = () => {
   const { id } = useParams();
   const { productsData, loading } = useProductsByCategory(id);
 
+  console.log("Productos por categoría:", productsData); // para verificar
+
   return loading ? <Loader /> : <ItemListContainer products={productsData} />;
 };

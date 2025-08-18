@@ -60,7 +60,7 @@ export const Checkout = () => {
               boxShadow="sm"
             >
               <Image
-                src={item.thumbnail}
+                src={item.image ?? "/placeholder.png"}
                 alt={item.title}
                 boxSize="100px"
                 objectFit="cover"

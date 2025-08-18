@@ -30,8 +30,8 @@ export const ItemDetail = ({
       <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={{ base: 8, md: 10 }}>
         <Flex>
           <Image
-            src={item.image ?? "/placeholder.png"} // ✅ fallback si no hay imagen
-            alt={item.title}
+            src={item.image ?? item?.images?.[0] ?? "/placeholder.png"}
+            alt={item?.title ?? "Product Image"}
             rounded="md"
             objectFit="cover"
             w="100%"

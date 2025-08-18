@@ -10,7 +10,10 @@ export const useProductsByCategory = (categoryId) => {
     setLoading(true);
     fetch(`https://fakestoreapi.com/products/category/${categoryId}`)
       .then((res) => res.json())
-      .then((data) => setProductsData(data))
+      .then((data) => {
+        console.log(data);
+        setProductsData(data);
+      })
       .catch((error) => console.error(error))
       .finally(() => setLoading(false));
   }, [categoryId]);

@@ -38,11 +38,10 @@ export const ItemListContainer = ({ products }) => {
                 <Image
                   src={item?.image ?? "/placeholder.png"}
                   rounded={"lg"}
+                  height={260}
                   width={280}
-                  maxH="240px"
-                  minH="200px"
                   objectFit={"cover"}
-                  alt={item?.title ?? "Product Image"}
+                  alt={item.title}
                 />
               </Box>
               <Stack pt={10} align={"center"}>
