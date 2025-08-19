@@ -3,6 +3,7 @@ import { Flex, Button, Input, Heading, useToast } from "@chakra-ui/react";
 import { CartContext } from "../context";
 import { db } from "../firebase";
 import { collection, addDoc } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
 
 export const Payment = () => {
   const [name, setName] = useState("");
@@ -10,6 +11,7 @@ export const Payment = () => {
   const [email, setEmail] = useState("");
   const { cartState, clearCart } = useContext(CartContext);
   const toast = useToast();
+  const navigate = useNavigate();
 
   const handleCreateOrder = async () => {
     if (name === "" || lastName === "" || email === "") {
@@ -63,13 +65,15 @@ export const Payment = () => {
       setLastName("");
       setEmail("");
       if (clearCart) clearCart(); //vaciar carrito si tenes la función
+
+      navigate("/thank-you", { state: { orderId: docRef.id } });
     } catch (error) {
       console.error(error);
       toast({
         title: "Error al crear la orden",
         description: "Intenta nuevamente más tarde.",
         status: "error",
-        duration: 4000,
+        duration: 3000,
         isClosable: true,
         position: "top-right",
       });

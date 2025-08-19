@@ -7,7 +7,7 @@ import {
   Checkout,
   Payment,
   ItemDetail,
-  /*Contact,*/
+  ThankYou,
 } from "../pages";
 import { NavBar } from "../components";
 
@@ -22,7 +22,7 @@ export const MainRouter = () => {
         <Route path="/category/:id" element={<Category />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/payment" element={<Payment />} />
-        {/*<Route path="/contacto" element={<Contact />} />*/}
+        <Route path="/thank-you" element={<ThankYou />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
