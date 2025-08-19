@@ -75,16 +75,22 @@ export const NavBar = () => {
           <Flex
             flex={1}
             justify="center"
+            ml="13%"
             display={{ base: "none", md: "flex" }}
           >
             <Stack direction={"row"} spacing={4} align="center">
-              <Button variant="ghost" fontWeight="normal" as={Link} to="/">
+              <Button variant="solid" colorScheme="gray" as={Link} to="/">
                 Home
               </Button>
 
               {/* Menú de categorías */}
               <Menu>
-                <MenuButton as={Button} cursor="pointer">
+                <MenuButton
+                  as={Button}
+                  variant="solid"
+                  colorScheme="gray"
+                  cursor="pointer"
+                >
                   Categorías
                 </MenuButton>
                 <MenuList height={"300px"} overflowY={"scroll"}>
