@@ -15,17 +15,119 @@ import {
   MenuList,
   MenuItem,
   Spinner,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  FormControl,
+  FormLabel,
+  Input,
+  FormErrorMessage,
+  VStack,
+  useToast,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { CartWidget } from "../CartWidget";
 import { useCategories } from "../../hooks/useCategories";
 import { Link } from "react-router-dom";
+import { useState } from "react";
 
 export const NavBar = () => {
   const { isOpen, onToggle } = useDisclosure();
   const { colorMode, toggleColorMode } = useColorMode();
-
   const { categories, loading } = useCategories();
+  const toast = useToast();
+
+  // === modal para SING UP Y SING IN ===
+  const [modalType, setModalType] = useState("");
+  const {
+    isOpen: isModalOpen,
+    onOpen: onModalOpen,
+    onClose: onModalClose,
+  } = useDisclosure();
+
+  // Función para abrir modal según tipo
+  const handleModal = (type) => {
+    setModalType(type);
+    onModalOpen();
+  };
+
+  //Form state
+  const [formData, setFormData] = useState({
+    name: "",
+    dni: "",
+    email: "",
+    password: "",
+  });
+
+  const [errors, setErrors] = useState({});
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const validate = () => {
+    const newErrors = {};
+    if (modalType === "signup") {
+      if (!formData.name) newErrors.name = "Nombre obligatorio";
+      if (!formData.dni) newErrors.dni = "DNI obligatorio";
+    }
+    if (!formData.email) newErrors.email = "Email obligatorio";
+    if (!formData.password) newErrors.password = "Contraseá obligatoria";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!validate()) return;
+
+    if (modalType === "signup") {
+      // Simulamos guardar el usuario en localStorage
+      const users = JSON.parse(localStorage.getItem("users") || "[]");
+      users.push(formData);
+      localStorage.setItem("users", JSON.stringify(users));
+
+      toast({
+        title: "Registro exitoso",
+        description: `Bienvenido ${formData.name}!`,
+        status: "success",
+        duration: 4000,
+        isClosable: true,
+        position: "top-right",
+      });
+    } else {
+      // Simulamos login
+      const users = JSON.parse(localStorage.getItem("users") || "[]");
+      const user = users.find(
+        (u) => u.email === formData.email && u.password === formData.password
+      );
+      if (user) {
+        toast({
+          title: "Inicio de sesión exitoso",
+          description: `Hola ${user.name || user.email}!`,
+          status: "success",
+          duration: 4000,
+          isClosable: true,
+          position: "top-right",
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: "Email o contraseña incorrectos",
+          status: "error",
+          duration: 4000,
+          isClosable: true,
+          position: "top-right",
+        });
+      }
+    }
+
+    onModalClose();
+    setFormData({ name: "", dni: "", email: "", password: "" });
+  };
 
   return (
     <Box>
@@ -137,7 +239,7 @@ export const NavBar = () => {
             fontSize={"sm"}
             fontWeight={400}
             variant={"link"}
-            href={"#"}
+            onClick={() => handleModal("signup")}
           >
             Sign Up
           </Button>
@@ -148,7 +250,7 @@ export const NavBar = () => {
             fontSize={"sm"}
             fontWeight={400}
             variant={"link"}
-            href={"#"}
+            onClick={() => handleModal("signin")}
           >
             Sign In
           </Button>
@@ -184,28 +286,97 @@ export const NavBar = () => {
             {/* Sign Up en mobile */}
             <Button
               as="a"
-              href="#"
               variant="outline"
               size="sm"
               width="fit-content"
-              alignSelf="start"
+              onClick={() => handleModal("signup")}
             >
               Sign Up
             </Button>
 
             <Button
               as="a"
-              href="#"
               variant="outline"
               size="sm"
               width="fit-content"
-              alignSelf="start"
+              //alignSelf="start"
+              onClick={() => handleModal("signin")}
             >
               Sign In
             </Button>
           </Stack>
         </Box>
       </Collapse>
+
+      {/* Modal para Sign Up / Sign In */}
+      <Modal isOpen={isModalOpen} onClose={onModalClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>
+            {modalType === "signup" ? "Sign Up" : "Sign In"}
+          </ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <form onSubmit={handleSubmit}>
+              <VStack spacing={4}>
+                {modalType === "signup" && (
+                  <>
+                    <FormControl isInvalid={errors.name}>
+                      <FormLabel>Nombre</FormLabel>
+                      <Input
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        placeholder="Tu nombre"
+                      />
+                      <FormErrorMessage>{errors.name}</FormErrorMessage>
+                    </FormControl>
+
+                    <FormControl isInvalid={errors.dni}>
+                      <FormLabel>DNI</FormLabel>
+                      <Input
+                        name="dni"
+                        value={formData.dni}
+                        onChange={handleChange}
+                        placeholder="Tu DNI"
+                      />
+                      <FormErrorMessage>{errors.dni}</FormErrorMessage>
+                    </FormControl>
+                  </>
+                )}
+
+                <FormControl isInvalid={errors.email}>
+                  <FormLabel>Email</FormLabel>
+                  <Input
+                    name="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder="tu@email.com"
+                  />
+                  <FormErrorMessage>{errors.email}</FormErrorMessage>
+                </FormControl>
+
+                <FormControl isInvalid={errors.password}>
+                  <FormLabel>Contraseña</FormLabel>
+                  <Input
+                    name="password"
+                    type="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    placeholder="********"
+                  />
+                  <FormErrorMessage>{errors.password}</FormErrorMessage>
+                </FormControl>
+
+                <Button colorScheme="teal" type="submit" w="full">
+                  {modalType === "signup" ? "Registrarse" : "Iniciar Sesión"}
+                </Button>
+              </VStack>
+            </form>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
     </Box>
   );
 };
