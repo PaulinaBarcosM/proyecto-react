@@ -5,26 +5,17 @@ export const CartContext = createContext();
 export const CartProvider = ({ children }) => {
   const [cartState, setCartState] = useState([]);
 
-  const addItem = (product, qtyItem = 1) => {
+  const addItem = (product) => {
     const existingProduct = cartState.find((item) => item.id === product.id);
 
     if (existingProduct) {
       setCartState(
         cartState.map((item) =>
-          item.id === product.id
-            ? { ...item, qtyItem: item.qtyItem + Number(qtyItem) }
-            : item
+          item.id === product.id ? { ...item, qtyItem: item.qtyItem + 1 } : item
         )
       );
     } else {
-      setCartState([
-        ...cartState,
-        {
-          ...product,
-          price: Number(product.price),
-          qtyItem: Number(qtyItem),
-        },
-      ]);
+      setCartState([...cartState, { ...product, qtyItem: 1 }]);
     }
   };
 

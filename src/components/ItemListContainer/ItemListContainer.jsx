@@ -29,18 +29,24 @@ export const ItemListContainer = ({ products }) => {
               rounded={"lg"}
               pos={"relative"}
               zIndex={1}
-              minH="450px"
+              h="500px"
               display="flex"
               flexDirection="column"
               justifyContent="space-between"
             >
-              <Box rounded={"lg"} mt={-12} pos={"relative"} height={"230px"}>
+              <Box
+                rounded="lg"
+                pos="relative"
+                overflow="hidden"
+                w="100%"
+                h={{ base: "200px", sm: "230px", md: "260px" }}
+              >
                 <Image
                   src={item?.image ?? "/placeholder.png"}
-                  rounded={"lg"}
-                  height={260}
-                  width={280}
-                  objectFit={"cover"}
+                  rounded="lg"
+                  objectFit="cover"
+                  w="100%"
+                  h="100%"
                   alt={item.title}
                 />
               </Box>
