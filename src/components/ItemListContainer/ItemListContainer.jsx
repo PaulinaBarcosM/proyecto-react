@@ -42,7 +42,7 @@ export const ItemListContainer = ({ products }) => {
                 h={{ base: "200px", sm: "230px", md: "260px" }}
               >
                 <Image
-                  src={item?.image ?? "/placeholder.png"}
+                  src={item.image ?? "/placeholder.png"}
                   rounded="lg"
                   objectFit="cover"
                   w="100%"

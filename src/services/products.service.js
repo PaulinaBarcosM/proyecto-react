@@ -12,7 +12,7 @@ export async function getAllCategories() {
   return await axios.get("https://fakestoreapi.com/products/categories");
 }
 
-export async function getProductsByCategory() {
+export async function getProductsByCategory(categoryId) {
   return await axios.get(
     `https://fakestoreapi.com/products/category/${categoryId}`
   );
