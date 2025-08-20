@@ -73,7 +73,7 @@ export const Payment = () => {
         title: "Error al crear la orden",
         description: "Intenta nuevamente más tarde.",
         status: "error",
-        duration: 3000,
+        duration: 4000,
         isClosable: true,
         position: "top-right",
       });
