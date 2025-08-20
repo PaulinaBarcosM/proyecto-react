@@ -21,9 +21,9 @@ export async function createProductsFirestore(collectionName) {
 
     // 3. Añadir los nuevos productos a Firestore
     const addPromises = fetchedProducts.map((product) => {
-      delete product.id;
-      addDoc(productsCollection, {
-        ...product,
+      const { id, ...rest } = product;
+      return addDoc(productsCollection, {
+        ...rest,
         createdAt: new Date(),
       });
     });

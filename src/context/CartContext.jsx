@@ -5,36 +5,39 @@ export const CartContext = createContext();
 export const CartProvider = ({ children }) => {
   const [cartState, setCartState] = useState([]);
 
-  const addItem = (product, qtyItem) => {
+  const addItem = (product, qtyItem = 1) => {
     const existingProduct = cartState.find((item) => item.id === product.id);
 
     if (existingProduct) {
       setCartState(
         cartState.map((item) =>
-          item.id === product.id ? { ...item, qtyItem: qtyItem } : item
+          item.id === product.id
+            ? { ...item, qtyItem: item.qtyItem + Number(qtyItem) }
+            : item
         )
       );
     } else {
-      setCartState([...cartState, { ...product, qtyItem }]);
+      setCartState([
+        ...cartState,
+        {
+          ...product,
+          price: Number(product.price),
+          qtyItem: Number(qtyItem),
+        },
+      ]);
     }
   };
 
-  const removeItem = (product) => {
-    const existingProduct = cartState.find((item) => item.id === product.id);
-
-    if (existingProduct) {
-      if (existingProduct.qtyItem === 1) {
-        setCartState(cartState.filter((item) => item.id !== product.id));
-      } else {
-        setCartState(
-          cartState.map((item) =>
-            item.id === product.id
-              ? { ...item, qtyItem: item.qtyItem - 1 }
-              : item
-          )
-        );
-      }
-    }
+  const removeItem = (product, qty = 1) => {
+    setCartState((prev) =>
+      prev
+        .map((item) =>
+          item.id === product.id
+            ? { ...item, qtyItem: item.qtyItem - qty }
+            : item
+        )
+        .filter((item) => item.qtyItem > 0)
+    );
   };
 
   const deleteItem = (product) => {
@@ -45,6 +48,12 @@ export const CartProvider = ({ children }) => {
     setCartState([]);
   };
 
+  const totalItems = cartState.reduce((acc, item) => acc + item.qtyItem, 0);
+  const totalPrice = cartState.reduce(
+    (acc, item) => acc + item.price * item.qtyItem,
+    0
+  );
+
   return (
     <CartContext.Provider
       value={{
@@ -53,6 +62,8 @@ export const CartProvider = ({ children }) => {
         removeItem,
         deleteItem,
         clearCart,
+        totalItems,
+        totalPrice,
       }}
     >
       {children}
