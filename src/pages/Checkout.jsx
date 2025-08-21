@@ -23,7 +23,7 @@ export const Checkout = () => {
     useContext(CartContext);
 
   const total = cartState.reduce(
-    (acc, item) => acc + Number(item.price) * Number(item.qtyItem),
+    (acc, item) => acc + item.price * item.qtyItem,
     0
   );
 
@@ -60,7 +60,7 @@ export const Checkout = () => {
               boxShadow="sm"
             >
               <Image
-                src={item.thumbnail || "/placeholder.png"}
+                src={item.thumbnail}
                 alt={item.title}
                 boxSize="100px"
                 objectFit="cover"
@@ -72,7 +72,7 @@ export const Checkout = () => {
                   {item.title}
                 </Text>
                 <HStack spacing={4} mt={2}>
-                  <Text>Precio: ${Number(item.price).toFixed(2)}</Text>
+                  <Text>Precio: ${item.price.toFixed(2)}</Text>
                   <HStack>
                     <IconButton
                       aria-label="Disminuir cantidad"
@@ -86,7 +86,7 @@ export const Checkout = () => {
                       aria-label="Aumentar cantidad"
                       icon={<AddIcon />}
                       size="sm"
-                      onClick={() => addItem(item, 1)}
+                      onClick={() => addItem(item)}
                       isDisabled={item.qtyItem >= item.stock}
                     />
                   </HStack>
@@ -95,8 +95,7 @@ export const Checkout = () => {
               <Spacer />
               <HStack>
                 <Text fontWeight="bold">
-                  Subtotal: $
-                  {(Number(item.price) * Number(item.qtyItem)).toFixed(2)}
+                  Subtotal: ${(item.price * item.qtyItem).toFixed(2)}
                 </Text>
                 <IconButton
                   aria-label="Eliminar producto"

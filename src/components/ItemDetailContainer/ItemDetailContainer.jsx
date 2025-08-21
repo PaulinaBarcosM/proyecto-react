@@ -105,57 +105,36 @@ export const ItemDetail = ({
   );
 };
 
-export const ItemDetailContainer = () => {
-  const [product, setProduct] = useState(null);
-  const [count, setCount] = useState(1); // ✅ iniciamos en 1
-  const [loading, setLoading] = useState(true);
+export const ItemDetailContainer = ({ item }) => {
+  const [count, setCount] = useState(0);
 
   const { addItem, removeItem } = useContext(CartContext);
-  const { id } = useParams();
+
   const navigate = useNavigate();
 
-  useEffect(() => {
-    setLoading(true);
-    fetch(`https://dummyjson.com/products/${id}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setProduct(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        setLoading(false);
-      });
-  }, [id]);
-
   const handleAddItem = () => {
-    if (count < product.stock) {
-      setCount(count + 1);
-    }
-  };
-  const handleRemoveItem = () => setCount(count > 1 ? count - 1 : 1);
-
-  const handleAddToCart = () => {
-    addItem(product, count); // ✅ agregamos al carrito la cantidad seleccionada
-    // navigate("/checkout"); // opcional, solo si quieres ir al checkout automáticamente
+    const newCount = count + 1;
+    setCount(newCount);
+    addItem(item, newCount);
   };
 
-  if (loading)
-    return (
-      <Flex height="80vh" align="center" justify="center">
-        <Spinner size="xl" />
-      </Flex>
-    );
+  const handleRemoveItem = () => {
+    setCount(count - 1);
+    removeItem(item);
+  };
 
-  if (!product) return <Text>Producto no encontrado</Text>;
+  const handleNavigateCheckout = () => {
+    navigate("/checkout");
+  };
 
   return (
     <ItemDetail
-      item={product}
-      count={count}
+      item={item}
       handleAddItem={handleAddItem}
       handleRemoveItem={handleRemoveItem}
-      handleAddToCart={handleAddToCart}
+      count={count}
+      setCount={setCount}
+      handleNavigateCheckout={handleNavigateCheckout}
     />
   );
 };

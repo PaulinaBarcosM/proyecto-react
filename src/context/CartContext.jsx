@@ -5,7 +5,7 @@ export const CartContext = createContext();
 export const CartProvider = ({ children }) => {
   const [cartState, setCartState] = useState([]);
 
-  const addItem = (product) => {
+  const addItem = (product, qtyItem) => {
     const existingProduct = cartState.find((item) => item.id === product.id);
 
     if (existingProduct) {
@@ -15,20 +15,26 @@ export const CartProvider = ({ children }) => {
         )
       );
     } else {
-      setCartState([...cartState, { ...product, qtyItem: 1 }]);
+      setCartState([...cartState, { ...product, qtyItem: qtyItem }]);
     }
   };
 
-  const removeItem = (product, qty = 1) => {
-    setCartState((prev) =>
-      prev
-        .map((item) =>
-          item.id === product.id
-            ? { ...item, qtyItem: item.qtyItem - qty }
-            : item
-        )
-        .filter((item) => item.qtyItem > 0)
-    );
+  const removeItem = (product) => {
+    const existingProduct = cartState.find((item) => item.id === product.id);
+
+    if (existingProduct) {
+      if (existingProduct.qtyItem === 1) {
+        setCartState(cartState.filter((item) => item.id !== product.id));
+      } else {
+        setCartState(
+          cartState.map((item) =>
+            item.id === product.id
+              ? { ...item, qtyItem: item.qtyItem - 1 }
+              : item
+          )
+        );
+      }
+    }
   };
 
   const deleteItem = (product) => {
@@ -39,12 +45,6 @@ export const CartProvider = ({ children }) => {
     setCartState([]);
   };
 
-  const totalItems = cartState.reduce((acc, item) => acc + item.qtyItem, 0);
-  const totalPrice = cartState.reduce(
-    (acc, item) => acc + item.price * item.qtyItem,
-    0
-  );
-
   return (
     <CartContext.Provider
       value={{
@@ -53,8 +53,6 @@ export const CartProvider = ({ children }) => {
         removeItem,
         deleteItem,
         clearCart,
-        totalItems,
-        totalPrice,
       }}
     >
       {children}

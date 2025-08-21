@@ -40,6 +40,10 @@ export const NavBar = () => {
   const { categories, loading } = useCategories();
   const toast = useToast();
 
+  // son para las categorias en vista mobile
+  const [categoriesOpen, setCategoriesOpen] = useState(false);
+  const onToggleCategories = () => setCategoriesOpen(!categoriesOpen);
+
   // === modal para SING UP Y SING IN ===
   const [modalType, setModalType] = useState("");
   const {
@@ -160,18 +164,19 @@ export const NavBar = () => {
         </Flex>
 
         {/* LOGO */}
-        <Flex flex={1} justify={{ base: "center", md: "start" }}>
-          <Text
-            textAlign={useBreakpointValue({ base: "center", md: "left" })}
-            fontFamily={"heading"}
-            fontSize="18px"
-            fontWeight="bold"
-            color={useColorModeValue("gray.800", "white")}
-            alignSelf="center"
-            ml={{ base: 4, md: 5 }}
-          >
-            Logo
-          </Text>
+        <Flex flex={1} justify={{ base: "center", md: "start" }} align="center">
+          <Link to="/" justify="center">
+            <Text
+              fontFamily={"heading"}
+              fontSize="18px"
+              fontWeight="bold"
+              color={useColorModeValue("gray.800", "white")}
+              alignSelf="center"
+              ml={{ base: 4, md: 5 }}
+            >
+              Logo
+            </Text>
+          </Link>
 
           {/* Menú Principal */}
           <Flex
@@ -261,27 +266,41 @@ export const NavBar = () => {
       <Collapse in={isOpen} animateOpacity>
         <Box p={4} bg={useColorModeValue("gray.100", "gray.700")}>
           <Stack as={"nav"} spacing={4}>
-            <Box as="a" href={`/`} key="home">
+            <Button
+              as="a"
+              href="/"
+              variant="outline"
+              size="sm"
+              width="fit-content"
+            >
               Home
-            </Box>
+            </Button>
 
-            {loading ? (
-              <Flex justify="center" p={4}>
-                <Spinner
-                  thickness="4px"
-                  speed="0.65s"
-                  emptyColor="gray.200"
-                  color="blue.500"
-                  size="md"
-                />
-              </Flex>
-            ) : (
-              categories.map((cat) => (
-                <Box as={Link} to={`/category/${cat.slug}`} key={cat.slug}>
-                  {cat.name}
-                </Box>
-              ))
-            )}
+            {/* Categories */}
+            <Button
+              onClick={onToggleCategories} // manejamos estado para abrir/cerrar
+              variant="outline"
+              size="sm"
+              width="fit-content"
+            >
+              Categories
+            </Button>
+
+            <Collapse in={categoriesOpen} animateOpacity>
+              <Stack pl={4} mt={2} spacing={2}>
+                {categories.map((cat) => (
+                  <Button
+                    as={Link}
+                    to={`/category/${cat.slug}`}
+                    key={cat.slug}
+                    variant="ghost"
+                    size="sm"
+                  >
+                    {cat.name}
+                  </Button>
+                ))}
+              </Stack>
+            </Collapse>
 
             {/* Sign Up en mobile */}
             <Button
@@ -299,7 +318,6 @@ export const NavBar = () => {
               variant="outline"
               size="sm"
               width="fit-content"
-              //alignSelf="start"
               onClick={() => handleModal("signin")}
             >
               Sign In
