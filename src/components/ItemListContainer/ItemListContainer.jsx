@@ -8,10 +8,8 @@ import {
   Image,
   Flex,
   Button,
-  HStack,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
-import { BsArrowUpRight } from "react-icons/bs";
 
 export const ItemListContainer = ({ products }) => {
   return (
@@ -42,7 +40,7 @@ export const ItemListContainer = ({ products }) => {
                 h={{ base: "200px", sm: "230px", md: "260px" }}
               >
                 <Image
-                  src={item.image ?? "/placeholder.png"}
+                  src={item?.images?.[0] ?? "/placeholder.png"} // ✅ usa el primer elemento del array
                   rounded="lg"
                   objectFit="cover"
                   w="100%"

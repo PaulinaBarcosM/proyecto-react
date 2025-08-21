@@ -8,10 +8,10 @@ export const useProductsById = (id) => {
     if (!id) return;
 
     setLoading(true);
-    fetch(`https://fakestoreapi.com/products/${id}`)
+    fetch(`https://dummyjson.com/products/${id}`)
       .then((res) => res.json())
       .then((data) => setProduct(data))
-      .catch((err) => console.error(err))
+      .catch((err) => console.error("Error fetching product:", err))
       .finally(() => setLoading(false));
   }, [id]);
 

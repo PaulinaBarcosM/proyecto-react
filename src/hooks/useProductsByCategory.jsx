@@ -8,13 +8,12 @@ export const useProductsByCategory = (categoryId) => {
     if (!categoryId) return;
 
     setLoading(true);
-    fetch(`https://fakestoreapi.com/products/category/${categoryId}`)
+    fetch(`https://dummyjson.com/products/category/${categoryId}`)
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
-        setProductsData(data);
+        setProductsData(data.products);
       })
-      .catch((error) => console.error(error))
+      .catch((err) => console.error(err))
       .finally(() => setLoading(false));
   }, [categoryId]);
 

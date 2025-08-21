@@ -30,7 +30,7 @@ export const ItemDetail = ({
       <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={{ base: 8, md: 10 }}>
         <Flex>
           <Image
-            src={item.image ?? item?.images?.[0] ?? "/placeholder.png"}
+            src={item?.images?.[0] ?? "/placeholder.png"}
             alt={item?.title ?? "Product Image"}
             rounded="md"
             objectFit="cover"
@@ -71,6 +71,12 @@ export const ItemDetail = ({
               <Text fontSize="lg">{item.description}</Text>
             </VStack>
           </Stack>
+          <Flex>
+            <Text>
+              Stock:{" "}
+              {item.stock < 20 ? "Ultimas unidades disponibles" : item.stock}
+            </Text>
+          </Flex>
 
           {/* Contador */}
           <Flex justify="start" align="center" gap={3}>
@@ -110,7 +116,7 @@ export const ItemDetailContainer = () => {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`https://fakestoreapi.com/products/${id}`)
+    fetch(`https://dummyjson.com/products/${id}`)
       .then((res) => res.json())
       .then((data) => {
         setProduct(data);
@@ -122,7 +128,11 @@ export const ItemDetailContainer = () => {
       });
   }, [id]);
 
-  const handleAddItem = () => setCount(count + 1);
+  const handleAddItem = () => {
+    if (count < product.stock) {
+      setCount(count + 1);
+    }
+  };
   const handleRemoveItem = () => setCount(count > 1 ? count - 1 : 1);
 
   const handleAddToCart = () => {

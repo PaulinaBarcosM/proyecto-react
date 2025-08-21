@@ -208,8 +208,8 @@ export const NavBar = () => {
                     </Flex>
                   ) : (
                     categories.map((cat) => (
-                      <MenuItem key={cat}>
-                        <Link to={`/category/${cat}`}>{cat}</Link>
+                      <MenuItem key={cat.slug}>
+                        <Link to={`/category/${cat.slug}`}>{cat.name}</Link>
                       </MenuItem>
                     ))
                   )}
@@ -277,8 +277,8 @@ export const NavBar = () => {
               </Flex>
             ) : (
               categories.map((cat) => (
-                <Box as={Link} to={`/category/${cat}`} key={cat}>
-                  {cat}
+                <Box as={Link} to={`/category/${cat.slug}`} key={cat.slug}>
+                  {cat.name}
                 </Box>
               ))
             )}

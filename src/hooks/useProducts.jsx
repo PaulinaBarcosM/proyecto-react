@@ -6,14 +6,12 @@ export const useProducts = (endpoint = "products") => {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`https://fakestoreapi.com/${endpoint}`)
+    fetch("https://dummyjson.com/products")
       .then((res) => res.json())
-      .then((data) => {
-        setProductsData(data);
-      })
+      .then((data) => setProductsData(data.products))
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));
-  }, [endpoint]);
+  }, []);
 
   return { productsData, loading };
 };
