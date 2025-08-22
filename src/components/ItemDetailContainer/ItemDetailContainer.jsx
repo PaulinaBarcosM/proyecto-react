@@ -80,9 +80,13 @@ export const ItemDetail = ({
 
           {/* Contador */}
           <Flex justify="start" align="center" gap={3}>
-            <Button onClick={handleRemoveItem}>-</Button>
+            <Button onClick={handleRemoveItem} isDisabled={count === 0}>
+              -
+            </Button>
             <Text>{count}</Text>
-            <Button onClick={handleAddItem}>+</Button>
+            <Button onClick={handleAddItem} isDisabled={count >= item.stock}>
+              +
+            </Button>
           </Flex>
 
           {/* Botón Add to Cart */}
@@ -107,24 +111,25 @@ export const ItemDetail = ({
 
 export const ItemDetailContainer = ({ item }) => {
   const [count, setCount] = useState(0);
-
-  const { addItem, removeItem } = useContext(CartContext);
-
+  const { addItem } = useContext(CartContext);
   const navigate = useNavigate();
 
   const handleAddItem = () => {
-    const newCount = count + 1;
-    setCount(newCount);
-    addItem(item, newCount);
+    if (count < item.stock) {
+      setCount(count + 1);
+    }
   };
 
   const handleRemoveItem = () => {
-    setCount(count - 1);
-    removeItem(item);
+    if (count > 0) {
+      setCount(count - 1);
+    }
   };
 
-  const handleNavigateCheckout = () => {
-    navigate("/checkout");
+  const handleAddToCart = () => {
+    if (count > 0) {
+      addItem(item, count);
+    }
   };
 
   return (
@@ -132,9 +137,9 @@ export const ItemDetailContainer = ({ item }) => {
       item={item}
       handleAddItem={handleAddItem}
       handleRemoveItem={handleRemoveItem}
+      handleAddToCart={handleAddToCart}
       count={count}
       setCount={setCount}
-      handleNavigateCheckout={handleNavigateCheckout}
     />
   );
 };
